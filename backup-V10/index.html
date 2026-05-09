@@ -188,7 +188,7 @@
 
   <footer class="board-footer">
     <span class="stat-n" id="statN">—</span>&thinsp;个标签页打开
-    <span class="fsep">·</span><span class="brand">StarTab v10.1</span>
+    <span class="fsep">·</span><span class="brand">StarTab v8</span>
   </footer>
 </section>
 
@@ -393,12 +393,6 @@
         </div>
       </div>
 
-      <!-- Recent custom sizes (last 3 inputs) -->
-      <div class="ar-presets-wrap" id="arRecentWrap" style="display:none">
-        <p class="ar-presets-label">最近使用</p>
-        <div class="ar-presets-grid" id="arRecentGrid"></div>
-      </div>
-
       <!-- Common sizes for current ratio -->
       <div class="ar-presets-wrap" id="arPresetsWrap">
         <p class="ar-presets-label">常用尺寸</p>
@@ -406,81 +400,6 @@
       </div>
 
     </div><!-- /.ar-body -->
-  </div>
-</div>
-
-<!-- ══════════════════ BORDER-RADIUS CALCULATOR MODAL ══════════════════ -->
-<div class="modal-mask" id="brCalcMask" style="display:none">
-  <div class="modal br-modal">
-    <div class="modal-hdr">
-      <span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15" style="vertical-align:-2px;margin-right:6px"><rect x="3" y="3" width="18" height="18" rx="6"/><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
-        圆角内外径计算器
-      </span>
-      <button class="icon-btn sm" id="brCalcClose">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <div class="br-body">
-      <div class="br-preview-wrap">
-        <canvas id="brCanvas" class="br-canvas" width="480" height="160"></canvas>
-      </div>
-      <div class="br-grid">
-        <div class="br-field">
-          <span class="br-label">外框圆角半径 R（大圆角）</span>
-          <div class="br-row">
-            <input id="brOuter" class="br-in" type="number" min="0" step="0.5" value="24" placeholder="24">
-            <span class="br-unit">px</span>
-          </div>
-        </div>
-        <div class="br-field">
-          <span class="br-label">内框与外框的间距 P</span>
-          <div class="br-row">
-            <input id="brPadding" class="br-in" type="number" min="0" step="0.5" value="8" placeholder="8">
-            <span class="br-unit">px</span>
-          </div>
-        </div>
-      </div>
-      <div class="br-results">
-        <div class="br-result-card">
-          <p class="br-result-label">计算结果</p>
-          <div class="br-result-row">
-            <span class="br-result-name">内框圆角</span>
-            <span class="br-result-val" id="brInnerVal">16px</span>
-            <button class="br-copy-btn" data-br-copy="brInnerVal" title="复制">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            </button>
-          </div>
-          <div class="br-result-row">
-            <span class="br-result-name">CSS 值</span>
-            <span class="br-result-val" id="brCssVal">border-radius: 16px</span>
-            <button class="br-copy-btn" data-br-copy="brCssVal" title="复制 CSS">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="br-result-card">
-          <p class="br-result-label">快速参考</p>
-          <div class="br-result-row">
-            <span class="br-result-name">外框 R</span>
-            <span class="br-result-val" id="brRefOuter">24px</span>
-          </div>
-          <div class="br-result-row">
-            <span class="br-result-name">间距 P</span>
-            <span class="br-result-val" id="brRefPad">8px</span>
-          </div>
-          <div class="br-result-row">
-            <span class="br-result-name">内框 r</span>
-            <span class="br-result-val" id="brRefInner">16px</span>
-          </div>
-        </div>
-      </div>
-      <div class="br-formula">
-        <strong>公式：</strong>内框圆角 <code>r = R − P</code>（外框圆角减去间距）<br>
-        当 R ≤ P 时，内框圆角建议设为 <code>0</code>（直角）或 <code>max(0, R − P)</code>。<br>
-        此规则来自苹果 Human Interface Guidelines 及 Google Material Design 的嵌套圆角设计规范。
-      </div>
-    </div>
   </div>
 </div>
 

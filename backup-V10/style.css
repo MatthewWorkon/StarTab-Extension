@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════
-   StarTab v10.1  ·  Refined WCAG  ·  Full-featured
+   StarTab v5  ·  Refined WCAG  ·  Full-featured
    ═══════════════════════════════════════════════ */
 
 :root {
@@ -893,7 +893,7 @@ body{
 }
 
 /* ══════════════════════════════════════════════
-   BOOKMARK TREE  (v10.1 — tree-view, no drag-drop)
+   BOOKMARK TREE  (v8 — tree-view, no drag-drop)
    ══════════════════════════════════════════════ */
 
 #bmTree { display:flex; flex-direction:column; gap:2px; }
@@ -1078,12 +1078,12 @@ body{
    ASPECT RATIO CALCULATOR MODAL
    ══════════════════════════════════════════════ */
 .ar-modal {
-  width:620px; max-width:98vw;
+  width:480px; max-width:96vw;
 }
 .ar-body {
-  padding:14px 20px 22px;
+  padding:14px 18px 20px;
   display:flex; flex-direction:column; gap:14px;
-  overflow-y:auto; overflow-x:hidden; max-height:72vh;
+  overflow-y:auto; max-height:70vh;
   scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.1) transparent;
 }
 
@@ -1205,94 +1205,3 @@ body{
 .ar-preset-chip:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.14); }
 .ar-preset-size { font-size:12px; font-weight:600; color:rgba(220,228,245,.90); }
 .ar-preset-name { font-size:9.5px; color:rgba(140,154,180,.70); margin-top:1px; }
-
-/* ── Recent custom sizes in preset chips ── */
-.ar-preset-chip.recent {
-  border-color:rgba(232,168,69,.24);
-  background:rgba(232,168,69,.06);
-}
-.ar-preset-chip.recent .ar-preset-name { color:var(--amb); opacity:.8; }
-
-/* ══════════════════════════════════════════════
-   BORDER-RADIUS INNER/OUTER CALCULATOR MODAL
-   ══════════════════════════════════════════════ */
-.br-modal { width:560px; max-width:98vw; }
-.br-body {
-  padding:14px 20px 22px;
-  display:flex; flex-direction:column; gap:16px;
-  overflow-y:auto; overflow-x:hidden; max-height:72vh;
-  scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.1) transparent;
-}
-.br-preview-wrap {
-  display:flex; justify-content:center; padding:4px 0;
-}
-.br-canvas {
-  border-radius:8px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
-}
-.br-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:10px 16px;
-}
-.br-field { display:flex; flex-direction:column; gap:5px; }
-.br-label {
-  font-size:10px; font-weight:600; color:rgba(150,164,192,.80);
-  letter-spacing:.6px; text-transform:uppercase;
-}
-.br-row { display:flex; gap:5px; }
-.br-in {
-  flex:1; background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.10); border-radius:8px;
-  color:rgba(230,236,250,.95); font-family:'Outfit',sans-serif;
-  font-size:15px; font-weight:500;
-  padding:9px 11px; outline:none; min-width:0;
-  transition:border-color .17s;
-  -moz-appearance:textfield;
-}
-.br-in::-webkit-outer-spin-button,
-.br-in::-webkit-inner-spin-button { -webkit-appearance:none; }
-.br-in:focus { border-color:rgba(232,168,69,.36); }
-.br-unit {
-  display:flex; align-items:center;
-  font-size:11px; color:rgba(140,154,180,.65);
-  padding:0 4px; white-space:nowrap;
-}
-.br-results {
-  display:grid; grid-template-columns:1fr 1fr; gap:8px;
-}
-.br-result-card {
-  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
-  border-radius:10px; padding:12px 14px;
-}
-.br-result-label {
-  font-size:9.5px; font-weight:600; color:rgba(140,154,180,.75);
-  letter-spacing:.8px; text-transform:uppercase; margin-bottom:6px;
-}
-.br-result-row {
-  display:flex; align-items:center; gap:6px; margin-bottom:4px;
-}
-.br-result-name { font-size:11px; color:rgba(160,174,202,.75); min-width:52px; }
-.br-result-val {
-  flex:1; font-size:13px; font-weight:600; color:rgba(230,236,250,.95);
-  font-variant-numeric:tabular-nums;
-}
-.br-copy-btn {
-  width:26px; height:26px; border-radius:6px; border:1px solid rgba(255,255,255,.09);
-  background:rgba(255,255,255,.05); color:rgba(160,174,202,.75);
-  cursor:pointer; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  transition:all .13s;
-}
-.br-copy-btn svg { width:11px; height:11px; }
-.br-copy-btn:hover { background:rgba(92,200,160,.10); color:var(--c5); border-color:rgba(92,200,160,.25); }
-.br-copy-btn.copied { background:rgba(92,200,160,.15); color:var(--c5); }
-.br-formula {
-  font-size:10px; color:rgba(130,144,170,.65); line-height:1.6;
-  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
-  border-radius:7px; padding:8px 12px;
-}
-.br-formula code {
-  font-family:'JetBrains Mono',monospace; font-size:10.5px;
-  color:var(--amb); background:rgba(232,168,69,.08);
-  padding:1px 5px; border-radius:4px;
-}

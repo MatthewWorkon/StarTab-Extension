@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "StarTab",
-  "version": "5.0.0",
+  "version": "10.1.0",
   "description": "Cosmic browser start page — search, shortcuts, tab kanban, bookmarks.",
   "permissions": ["tabs", "activeTab", "storage", "topSites", "bookmarks"],
   "chrome_url_overrides": { "newtab": "index.html" },

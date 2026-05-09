@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   StarTab v10.1  —  app.js
+   StarTab v5  —  app.js
    ═══════════════════════════════════════════════════════ */
 'use strict';
 
@@ -811,7 +811,7 @@ async function renderBoard(){
 }
 
 /* ══════════════════════════════════════════════════════
-   BOOKMARKS — tree-view + move-to-group popup (v10.1)
+   BOOKMARKS — tree-view + move-to-group popup (v8)
    ══════════════════════════════════════════════════════ */
 
 /** Build one bookmark row DOM element */
@@ -1455,17 +1455,6 @@ const SLASH_TOOLS = [
     kbd:  '↩ 打开',
     open: () => openArCalc(),
   },
-  {
-    id:   'br-calc',
-    name: '圆角内外径计算器',
-    desc: '根据外框圆角与间距，计算嵌套内框的正确圆角值',
-    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-             <rect x="3" y="3" width="18" height="18" rx="6"/>
-             <rect x="7" y="7" width="10" height="10" rx="2"/>
-           </svg>`,
-    kbd:  '↩ 打开',
-    open: () => openBrCalc(),
-  },
 ];
 
 function openSlashMenu() {
@@ -1599,11 +1588,8 @@ function _arRenderPresets() {
     chip.addEventListener('click', () => {
       const wInp = document.getElementById('arWidth');
       const hInp = document.getElementById('arHeight');
-      const pw   = parseInt(chip.dataset.pw), ph = parseInt(chip.dataset.ph);
-      if (wInp) wInp.value = pw;
-      if (hInp) hInp.value = ph;
-      _arPushRecent(pw, ph);
-      _arRecentSizes();
+      if (wInp) wInp.value = chip.dataset.pw;
+      if (hInp) hInp.value = chip.dataset.ph;
     });
   });
 }
@@ -1617,8 +1603,8 @@ function openArCalc() {
   const hInp = document.getElementById('arHeight');
   if (wInp) wInp.value = 1920;
   if (hInp) hInp.value = 1080;
+  // Activate first tab
   document.querySelectorAll('.ar-tab').forEach(t => t.classList.toggle('active', t.dataset.ratio === '16:9'));
-  _arRecentSizes(); // 打开时渲染最近使用
 }
 
 // Ratio tab clicks
@@ -1685,172 +1671,6 @@ document.getElementById('arCalcClose')?.addEventListener('click', () => {
 });
 document.getElementById('arCalcMask')?.addEventListener('click', e => {
   if (e.target === e.currentTarget) document.getElementById('arCalcMask').style.display = 'none';
-});
-
-// ─── Recent custom sizes ───────────────────────────────────────────────────
-const AR_RECENT_KEY = 'ar_recent_sizes';
-const AR_RECENT_MAX = 3;
-
-function _arGetRecent() {
-  try { return JSON.parse(localStorage.getItem(AR_RECENT_KEY) || '[]'); } catch { return []; }
-}
-
-function _arPushRecent(w, h) {
-  if (!w || !h || w < 1 || h < 1) return;
-  let recent = _arGetRecent();
-  recent = recent.filter(r => !(r.w === w && r.h === h));
-  recent.unshift({ w, h });
-  recent = recent.slice(0, AR_RECENT_MAX);
-  try { localStorage.setItem(AR_RECENT_KEY, JSON.stringify(recent)); } catch {}
-}
-
-function _arRecentSizes() {
-  const wrap = document.getElementById('arRecentWrap');
-  const grid = document.getElementById('arRecentGrid');
-  if (!wrap || !grid) return;
-  const recent = _arGetRecent();
-  if (!recent.length) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  grid.innerHTML = recent.map(r => `
-    <div class="ar-preset-chip recent" data-pw="${r.w}" data-ph="${r.h}">
-      <span class="ar-preset-size">${r.w} × ${r.h}</span>
-      <span class="ar-preset-name">最近使用</span>
-    </div>`).join('');
-  grid.querySelectorAll('.ar-preset-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      const wInp = document.getElementById('arWidth');
-      const hInp = document.getElementById('arHeight');
-      const pw = parseInt(chip.dataset.pw), ph = parseInt(chip.dataset.ph);
-      if (wInp) wInp.value = pw;
-      if (hInp) hInp.value = ph;
-      if (wInp && hInp) hInp.value = _arCalcHeight(parseInt(wInp.value));
-    });
-  });
-}
-
-function _arRecordCurrentSize() {
-  const w = parseInt(document.getElementById('arWidth')?.value);
-  const h = parseInt(document.getElementById('arHeight')?.value);
-  if (w > 0 && h > 0) { _arPushRecent(w, h); _arRecentSizes(); }
-}
-document.getElementById('arWidth')?.addEventListener('change',  _arRecordCurrentSize);
-document.getElementById('arHeight')?.addEventListener('change', _arRecordCurrentSize);
-
-// ─── Border-radius calculator ──────────────────────────────────────────────
-function _brCalc() {
-  const outer   = parseFloat(document.getElementById('brOuter')?.value)   || 0;
-  const padding = parseFloat(document.getElementById('brPadding')?.value) || 0;
-  const inner   = Math.max(0, outer - padding);
-  return { outer, padding, inner };
-}
-
-function _rrect(ctx, x, y, w, h, r) {
-  r = Math.min(r, w / 2, h / 2);
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y,     x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x,     y + h, r);
-  ctx.arcTo(x,     y + h, x,     y,     r);
-  ctx.arcTo(x,     y,     x + w, y,     r);
-  ctx.closePath();
-}
-
-function _brDraw() {
-  const canvas = document.getElementById('brCanvas');
-  if (!canvas) return;
-  const ctx  = canvas.getContext('2d');
-  const W    = canvas.width, H = canvas.height;
-  const { outer, padding, inner } = _brCalc();
-  ctx.clearRect(0, 0, W, H);
-
-  const margin  = 20;
-  const scale   = Math.min((W - margin * 2) / 240, (H - margin * 2) / 140);
-  const boxW    = 240 * scale, boxH = 140 * scale;
-  const bx = (W - boxW) / 2, by = (H - boxH) / 2;
-  const scaledOuter = Math.min(outer   * scale, Math.min(boxW, boxH) / 2);
-  const pad         = Math.min(padding * scale, Math.min(boxW, boxH) / 4);
-  const scaledInner = Math.max(0, scaledOuter - pad);
-  const innerW = boxW - pad * 2, innerH = boxH - pad * 2;
-  const ix = bx + pad, iy = by + pad;
-
-  // Outer box
-  ctx.beginPath();
-  _rrect(ctx, bx, by, boxW, boxH, scaledOuter);
-  ctx.fillStyle   = 'rgba(232,168,69,0.10)';
-  ctx.strokeStyle = 'rgba(232,168,69,0.55)';
-  ctx.lineWidth   = 1.5;
-  ctx.fill(); ctx.stroke();
-
-  // Padding dashed guide
-  if (pad > 1) {
-    ctx.setLineDash([3, 3]);
-    ctx.strokeStyle = 'rgba(92,200,160,0.40)';
-    ctx.lineWidth   = 1;
-    ctx.beginPath();
-    _rrect(ctx, bx + pad * 0.5, by + pad * 0.5, boxW - pad, boxH - pad, scaledOuter - pad * 0.5);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
-
-  // Inner box
-  ctx.beginPath();
-  _rrect(ctx, ix, iy, Math.max(4, innerW), Math.max(4, innerH), scaledInner);
-  ctx.fillStyle   = 'rgba(91,163,245,0.12)';
-  ctx.strokeStyle = 'rgba(91,163,245,0.65)';
-  ctx.lineWidth   = 1.5;
-  ctx.fill(); ctx.stroke();
-
-  // Labels
-  const fs = Math.max(10, 11 * scale);
-  ctx.font      = `${fs}px Outfit,sans-serif`;
-  ctx.fillStyle = 'rgba(232,168,69,0.90)';
-  ctx.fillText(`R = ${outer}px`, bx + 6, by + scaledOuter + 14 * scale);
-  ctx.fillStyle = 'rgba(91,163,245,0.90)';
-  ctx.fillText(`r = ${_brCalc().inner}px`, ix + 4, iy + scaledInner + 14 * scale);
-  if (pad > 2) {
-    ctx.fillStyle = 'rgba(92,200,160,0.85)';
-    ctx.fillText('P', bx + pad * 0.2, by + boxH / 2);
-  }
-
-  // Update result text
-  const innerR = Math.round(_brCalc().inner * 10) / 10;
-  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  setTxt('brInnerVal', `${innerR}px`);
-  setTxt('brCssVal',   `border-radius: ${innerR}px`);
-  setTxt('brRefOuter', `${outer}px`);
-  setTxt('brRefPad',   `${padding}px`);
-  setTxt('brRefInner', `${innerR}px`);
-}
-
-function openBrCalc() {
-  const mask = document.getElementById('brCalcMask');
-  if (!mask) return;
-  mask.style.display = 'flex';
-  setTimeout(_brDraw, 50);
-}
-
-['brOuter','brPadding'].forEach(id => {
-  document.getElementById(id)?.addEventListener('input', _brDraw);
-});
-
-document.getElementById('brCalcMask')?.addEventListener('click', async e => {
-  const btn = e.target.closest('.br-copy-btn');
-  if (!btn) return;
-  const el  = document.getElementById(btn.dataset.brCopy);
-  if (!el)  return;
-  const txt = el.textContent || el.value || '';
-  try {
-    await navigator.clipboard.writeText(txt);
-    btn.classList.add('copied');
-    setTimeout(() => btn.classList.remove('copied'), 1500);
-    toast(`已复制：${txt}`);
-  } catch { toast('复制失败，请手动选取'); }
-});
-
-document.getElementById('brCalcClose')?.addEventListener('click', () => {
-  document.getElementById('brCalcMask').style.display = 'none';
-});
-document.getElementById('brCalcMask')?.addEventListener('click', e => {
-  if (e.target === e.currentTarget) document.getElementById('brCalcMask').style.display = 'none';
 });
 
 async function boot(){
