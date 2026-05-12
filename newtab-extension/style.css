@@ -97,6 +97,31 @@ body{
 }
 .hero-date{font-size:12.5px;color:rgba(200,210,230,.60);letter-spacing:.6px}
 
+/* Tip banner */
+.hero-tip{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(245,222,160,.18);border:1px solid rgba(210,170,60,.26);
+  border-radius:9px;padding:7px 10px;
+  font-size:11.5px;font-weight:500;
+  color:#8b6d2b;
+  animation:tipIn .28s ease both;
+}
+@keyframes tipIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.hero-tip svg{flex-shrink:0;opacity:.75}
+.hero-tip kbd{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  background:rgba(139,109,43,.15);border:1px solid rgba(139,109,43,.28);
+  border-radius:4px;padding:1px 5px;
+}
+.hero-tip-close{
+  margin-left:auto;width:20px;height:20px;border-radius:5px;
+  border:none;background:transparent;color:#8b6d2b;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:.50;transition:opacity .12s,background .12s;flex-shrink:0;
+}
+.hero-tip-close svg{width:10px;height:10px}
+.hero-tip-close:hover{opacity:1;background:rgba(139,109,43,.12)}
+
 /* Search bar */
 .search-bar{
   position:relative;display:flex;align-items:center;
@@ -112,23 +137,11 @@ body{
   background:rgba(255,255,255,.14);
   box-shadow:0 0 0 3px rgba(232,168,69,.10);
 }
-.eng-btn{
-  flex-shrink:0;display:flex;align-items:center;gap:4px;
-  height:50px;padding:0 8px 0 16px;
-  background:none;border:none;
-  border-right:1px solid rgba(255,255,255,.12);
-  color:rgba(200,210,230,.65);cursor:pointer;
-  font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;
-  border-radius:38px 0 0 38px;transition:color .16s;user-select:none;
-}
-.eng-btn:hover{color:#fff}
-.eng-icon{font-size:14px;font-weight:700;color:var(--amb);min-width:17px;text-align:center}
-.eng-chev{width:11px;height:11px;opacity:.50;transition:transform .2s;flex-shrink:0}
-.eng-chev.open{transform:rotate(180deg)}
 .search-input{
   flex:1;height:50px;background:none;border:none;outline:none;
   color:#fff;font-family:'Outfit',sans-serif;font-size:15px;
-  padding:0 10px;min-width:0;
+  padding:0 10px 0 20px;min-width:0;
+  border-radius:38px 0 0 38px;
 }
 .search-input::placeholder{color:rgba(255,255,255,.32)}
 .search-go{
@@ -140,28 +153,7 @@ body{
 }
 .search-go:hover{opacity:.88}.search-go:active{transform:scale(.96)}
 .search-go svg{width:18px;height:18px}
-
-/* Engine dropdown */
-.eng-dropdown{
-  position:fixed;z-index:2147483647;display:none;
-  min-width:170px;padding:6px;
-  background:rgba(8,12,26,.98);
-  border:1px solid rgba(255,255,255,.13);
-  border-radius:13px;backdrop-filter:blur(22px);
-  box-shadow:0 16px 48px rgba(0,0,0,.68);
-  animation:ddIn .13s ease both;
-}
 @keyframes ddIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
-.eng-opt{
-  display:flex;align-items:center;gap:10px;
-  width:100%;padding:9px 12px;background:none;border:none;
-  color:rgba(200,210,230,.62);font-family:'Outfit',sans-serif;
-  font-size:13px;font-weight:500;cursor:pointer;border-radius:9px;text-align:left;
-  transition:background .12s,color .12s;
-}
-.eng-opt:hover{background:rgba(255,255,255,.08);color:#fff}
-.eng-opt.selected{color:var(--amb)}
-.eoi{font-size:13px;font-weight:700;color:var(--amb);min-width:20px;text-align:center}
 
 /* Shortcuts row */
 .shortcuts-row{
@@ -1058,6 +1050,7 @@ body{
   cursor:pointer; text-align:left; transition:background .12s, color .12s;
 }
 .slash-tool-btn:hover { background:rgba(255,255,255,.07); color:#fff; }
+.slash-tool-btn.highlighted { background:rgba(232,168,69,.12); color:#fff; border:1px solid rgba(232,168,69,.26); }
 .slash-tool-icon {
   width:32px; height:32px; border-radius:8px; flex-shrink:0;
   background:rgba(232,168,69,.12); border:1px solid rgba(232,168,69,.22);

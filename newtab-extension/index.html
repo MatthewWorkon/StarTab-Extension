@@ -24,13 +24,16 @@
 
   <!-- Frosted glass card — always readable on any wallpaper -->
   <div class="hero-glass">
+    <div class="hero-tip" id="heroTip" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+      <span>键入 <kbd>/</kbd> 可以调出内置小工具</span>
+      <button class="hero-tip-close" id="heroTipClose" type="button" title="关闭提示">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
     <p class="hero-date" id="heroDate"></p>
     <div class="search-bar">
-      <button class="eng-btn" id="engBtn" type="button">
-        <span class="eng-icon" id="engIcon">G</span>
-        <svg class="eng-chev" id="engChev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
-      </button>
-      <input id="searchInput" class="search-input" type="text" placeholder="搜索网页，或输入 / 调出工具…" autocomplete="off" spellcheck="false">
+      <input id="searchInput" class="search-input" type="text" placeholder="搜索网页，或输入 URL…" autocomplete="off" spellcheck="false">
       <button class="search-go" id="searchGo" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
       </button>
@@ -193,16 +196,6 @@
 </section>
 
 
-<!-- Engine dropdown — body root, fixed -->
-<div id="engDropdown" class="eng-dropdown">
-  <button class="eng-opt" data-engine="google"><span class="eoi">G</span>Google</button>
-  <button class="eng-opt" data-engine="bing"><span class="eoi">B</span>Bing</button>
-  <button class="eng-opt" data-engine="duckduckgo"><span class="eoi">🦆</span>DuckDuckGo</button>
-  <button class="eng-opt" data-engine="baidu"><span class="eoi">百</span>百度</button>
-  <button class="eng-opt" data-engine="sogou"><span class="eoi">搜</span>搜狗</button>
-</div>
-
-
 <!-- ══════════════════════ SETTINGS MODAL ══════════════════════ -->
 <div class="modal-mask" id="modalMask" style="display:none">
   <div class="modal">
@@ -213,21 +206,6 @@
       </button>
     </div>
     <div class="modal-body">
-
-      <!-- Engine -->
-      <div class="msec">
-        <p class="msec-title">搜索引擎</p>
-        <div class="mrow">
-          <span class="mlabel">默认引擎</span>
-          <select id="setEngine">
-            <option value="google">Google</option>
-            <option value="bing">Bing</option>
-            <option value="duckduckgo">DuckDuckGo</option>
-            <option value="baidu">百度</option>
-            <option value="sogou">搜狗</option>
-          </select>
-        </div>
-      </div>
 
       <!-- Theme -->
       <div class="msec">

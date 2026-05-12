@@ -3,15 +3,6 @@
    ═══════════════════════════════════════════════════════ */
 'use strict';
 
-/* ── ENGINES ─────────────────────────────────────────── */
-const ENGINES={
-  google:{icon:'G',url:'https://www.google.com/search?q='},
-  bing:{icon:'B',url:'https://www.bing.com/search?q='},
-  duckduckgo:{icon:'🦆',url:'https://duckduckgo.com/?q='},
-  baidu:{icon:'百',url:'https://www.baidu.com/s?wd='},
-  sogou:{icon:'搜',url:'https://www.sogou.com/web?query='},
-};
-
 /* ── CATEGORIES ──────────────────────────────────────── */
 const CATS={
   '效率办公':{cls:'cat-c1'},  '工具':{cls:'cat-c2'},
@@ -235,9 +226,9 @@ function resetBoardBg(){
 }
 
 /* ── STATE ───────────────────────────────────────────── */
-let openTabs=[], domainGroups=[], activeEngine='google';
+let openTabs=[], domainGroups=[];
 let timeFilter='all', typeFilter='all';
-let ddOpen=false, rafId=null, starPaused=false;
+let rafId=null, starPaused=false;
 
 /* ── Undo-close state ─────────────────────────────────── */
 // Snapshot of all tabs before "close all" — [{url, title}]
@@ -490,6 +481,20 @@ async function deleteDeferred(id){
 
 /* ── TRASH (soft-delete store) ───────────────────────── */
 const TRASH_KEY='trash_v1';
+const TIP_DISMISSED_KEY='tip_dismissed_v101';
+async function showTipIfNeeded(){
+  const tip=document.getElementById('heroTip');if(!tip)return;
+  try{const{[TIP_DISMISSED_KEY]:v}=await chrome.storage.local.get(TIP_DISMISSED_KEY);if(v) return;}catch{}
+  tip.style.display='flex';
+}
+document.getElementById('heroTipClose')?.addEventListener('click',async()=>{
+  const tip=document.getElementById('heroTip');if(!tip)return;
+  tip.style.opacity='0';tip.style.transform='translateY(-4px)';
+  tip.style.transition='opacity .18s,transform .18s';
+  setTimeout(()=>{tip.style.display='none';},200);
+  try{await chrome.storage.local.set({[TIP_DISMISSED_KEY]:true});}catch{}
+});
+
 async function getTrash(){
   try{const{[TRASH_KEY]:t=[]}=await chrome.storage.local.get(TRASH_KEY);return t;}catch{return[];}
 }
@@ -721,14 +726,17 @@ function applyBackground(url){
 function tick(){const now=new Date(),el=document.getElementById('heroClock');if(el)el.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');}
 function renderDate(){const D=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],now=new Date(),el=document.getElementById('heroDate');if(el)el.textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${D[now.getDay()]}`;}
 
-/* ── ENGINE DROPDOWN ─────────────────────────────────── */
-function ddPos(){const b=document.getElementById('engBtn'),d=document.getElementById('engDropdown');if(!b||!d)return;const r=b.getBoundingClientRect();d.style.top=(r.bottom+7)+'px';d.style.left=r.left+'px';}
-function ddShow(){ddOpen=true;const d=document.getElementById('engDropdown');if(!d)return;ddPos();d.style.display='block';d.style.animation='none';void d.offsetWidth;d.style.animation='';document.getElementById('engChev')?.classList.add('open');}
-function ddHide(){ddOpen=false;const d=document.getElementById('engDropdown');if(!d)return;d.style.display='none';document.getElementById('engChev')?.classList.remove('open');}
-function setEngine(k){activeEngine=k;const e=ENGINES[k]||ENGINES.google;const i=document.getElementById('engIcon');if(i)i.textContent=e.icon;document.querySelectorAll('.eng-opt').forEach(b=>b.classList.toggle('selected',b.dataset.engine===k));const s=document.getElementById('setEngine');if(s)s.value=k;}
-
 /* ── SEARCH ──────────────────────────────────────────── */
-function doSearch(){const q=(document.getElementById('searchInput')?.value||'').trim();if(!q)return;const e=ENGINES[activeEngine]||ENGINES.google;const isUrl=/^https?:\/\//i.test(q)||(/^[a-z0-9.-]+\.[a-z]{2,}/i.test(q)&&!q.includes(' '));window.location.href=isUrl?(q.startsWith('http')?q:'https://'+q):e.url+encodeURIComponent(q);}
+function doSearch(){
+  const q=(document.getElementById('searchInput')?.value||'').trim();
+  if(!q)return;
+  const isUrl=/^https?:\/\//i.test(q)||(/^[a-z0-9.-]+\.[a-z]{2,}/i.test(q)&&!q.includes(' '));
+  if(isUrl){
+    window.location.href=q.startsWith('http')?q:'https://'+q;
+  }else{
+    try{chrome.search.query({text:q,disposition:'CURRENT_TAB'});}catch{window.location.href='https://www.google.com/search?q='+encodeURIComponent(q);}
+  }
+}
 
 /* ── SHORTCUTS ───────────────────────────────────────── */
 function renderShortcuts(sites){
@@ -1145,6 +1153,28 @@ function applyGradTheme(){
 // Search
 // Search
 document.getElementById('searchInput')?.addEventListener('keydown', e => {
+  const menuOpen = document.getElementById('slashMenu')?.style.display !== 'none';
+  if (menuOpen) {
+    const btns = document.querySelectorAll('#slashMenuList .slash-tool-btn');
+    const count = btns.length;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      _slashIdx = count ? (_slashIdx + 1) % count : -1;
+      _slashHighlight();
+      return;
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      _slashIdx = count ? (_slashIdx - 1 + count) % count : -1;
+      _slashHighlight();
+      return;
+    }
+    if (e.key === 'Enter' && _slashIdx >= 0 && _slashIdx < count) {
+      e.preventDefault();
+      btns[_slashIdx].click();
+      return;
+    }
+  }
   if (e.key === 'Enter') { closeSlashMenu(); doSearch(); }
   if (e.key === 'Escape') { closeSlashMenu(); e.target.value = ''; }
 });
@@ -1157,17 +1187,11 @@ document.getElementById('searchInput')?.addEventListener('input', e => {
   }
 });
 document.getElementById('searchGo')?.addEventListener('click', doSearch);
-// Engine
-document.getElementById('engBtn')?.addEventListener('click',e=>{e.stopPropagation();ddOpen?ddHide():ddShow();});
-document.getElementById('engDropdown')?.addEventListener('click',e=>{const o=e.target.closest('.eng-opt');if(!o)return;setEngine(o.dataset.engine);patchSettings({engine:o.dataset.engine});ddHide();});
-document.addEventListener('click',()=>{if(ddOpen)ddHide();});
-window.addEventListener('scroll',()=>{if(ddOpen)ddPos();},{passive:true});
-window.addEventListener('resize',()=>{if(ddOpen)ddPos();},{passive:true});
 // Settings modal
 document.getElementById('settingsBtn')?.addEventListener('click',()=>{document.getElementById('modalMask').style.display='flex';});
 document.getElementById('modalClose')?.addEventListener('click',()=>{document.getElementById('modalMask').style.display='none';});
 document.getElementById('modalMask')?.addEventListener('click',e=>{if(e.target===e.currentTarget)document.getElementById('modalMask').style.display='none';});
-document.getElementById('setEngine')?.addEventListener('change',e=>{setEngine(e.target.value);patchSettings({engine:e.target.value});});
+
 // Theme type tabs
 document.querySelectorAll('.ttype-tab').forEach(t=>t.addEventListener('click',()=>switchThemeType(t.dataset.ttype)));
 // Solid swatches
@@ -1468,13 +1492,22 @@ const SLASH_TOOLS = [
   },
 ];
 
+let _slashIdx = -1;
+
+function _slashHighlight() {
+  const btns = document.querySelectorAll('#slashMenuList .slash-tool-btn');
+  btns.forEach((b, i) => {
+    b.classList.toggle('highlighted', i === _slashIdx);
+    if (i === _slashIdx) b.scrollIntoView({ block: 'nearest' });
+  });
+}
+
 function openSlashMenu() {
   const menu     = document.getElementById('slashMenu');
   const listEl   = document.getElementById('slashMenuList');
   const shortcuts = document.getElementById('shortcutsRow');
   if (!menu || !listEl) return;
 
-  // Hide shortcuts, show menu
   if (shortcuts) shortcuts.style.display = 'none';
 
   listEl.innerHTML = '';
@@ -1497,6 +1530,7 @@ function openSlashMenu() {
     listEl.appendChild(btn);
   });
 
+  _slashIdx = -1;
   menu.style.display = 'block';
 }
 
@@ -1505,6 +1539,7 @@ function closeSlashMenu() {
   const shortcuts = document.getElementById('shortcutsRow');
   if (menu) menu.style.display = 'none';
   if (shortcuts) shortcuts.style.display = '';
+  _slashIdx = -1;
 }
 
 // Close slash menu on outside click
@@ -1855,8 +1890,8 @@ document.getElementById('brCalcMask')?.addEventListener('click', e => {
 
 async function boot(){
   renderDate();tick();setInterval(tick,15000);
+  showTipIfNeeded();
   const settings=await loadSettings();
-  setEngine(settings.engine||'google');
 
   // Restore theme
   const ttype=settings.themeType||'solid';

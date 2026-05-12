@@ -3,7 +3,7 @@
   "name": "StarTab",
   "version": "10.1.0",
   "description": "Cosmic browser start page — search, shortcuts, tab kanban, bookmarks.",
-  "permissions": ["tabs", "activeTab", "storage", "topSites", "bookmarks"],
+  "permissions": ["tabs", "activeTab", "storage", "topSites", "bookmarks", "search"],
   "chrome_url_overrides": { "newtab": "index.html" },
   "background": { "service_worker": "background.js" },
   "action": {
